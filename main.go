@@ -70,6 +70,11 @@ func newUser(name string, age int) *User {
 	return u
 }
 
+// 構造体のメソッド
+func (u User) greetUser() string {
+	return "hello" + u.name
+}
+
 func main() {
 
 	//===================================================
@@ -200,4 +205,7 @@ func main() {
 	// ネスト構造体
 	account := Account{User{"tarou", 30}, "hogehoge@example.com"}
 	fmt.Println(account.User.name, account.User.age, account.email)
+
+	// 構造体のメソッド
+	fmt.Println(u.greetUser())
 }
