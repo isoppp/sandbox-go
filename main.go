@@ -46,6 +46,24 @@ func pointerInc(x *int) {
 	fmt.Println(*x)
 }
 
+//===================================================
+// 構造体
+//===================================================
+
+// 構造体定義
+type User struct {
+	name string
+	age  int
+}
+
+// Goでは初期化関数を一緒に作ることが一般的？
+func newUser(name string, age int) *User {
+	u := new(User)
+	u.name = name
+	u.age = age
+	return u
+}
+
 func main() {
 
 	//===================================================
@@ -140,4 +158,36 @@ func main() {
 	default:
 		fmt.Println("switchVar is another value")
 	}
+
+	//===================================================
+	// 構造体
+	//===================================================
+
+	// 構造体の初期化1
+	var u User
+	u.name = "tarou"
+	u.age = 30
+	fmt.Println(u.name, u.age)
+
+	// 構造体の初期化2
+	u2 := User{"tarou", 30}
+	fmt.Println(u2.name, u2.age)
+
+	// 構造体の初期化3
+	u3 := User{name: "tarou", age: 30}
+	fmt.Println(u3.name, u3.age)
+
+	// ポインタ型 up1はポインタ型
+	up1 := &User{"tarou", 30}
+	fmt.Println(up1.name, up1.age)
+
+	// ポインタ型2 up2はポインタ型
+	up2 := new(User)
+	up2.name = "tarou"
+	up2.age = 30
+	fmt.Println(up2.name, up2.age)
+
+	// Goでは初期化関数を一緒に作ることが一般的？
+	uu := newUser("tarou", 30)
+	fmt.Println(uu.name, uu.age)
 }
