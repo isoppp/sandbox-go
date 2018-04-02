@@ -56,6 +56,12 @@ type User struct {
 	age  int
 }
 
+// ネスト構造体
+type Account struct {
+	User
+	email string
+}
+
 // Goでは初期化関数を一緒に作ることが一般的？
 func newUser(name string, age int) *User {
 	u := new(User)
@@ -190,4 +196,8 @@ func main() {
 	// Goでは初期化関数を一緒に作ることが一般的？
 	uu := newUser("tarou", 30)
 	fmt.Println(uu.name, uu.age)
+
+	// ネスト構造体
+	account := Account{User{"tarou", 30}, "hogehoge@example.com"}
+	fmt.Println(account.User.name, account.User.age, account.email)
 }
