@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 //===================================================
 // 関数・ポインタ・制御構文
@@ -73,6 +76,29 @@ func newUser(name string, age int) *User {
 // 構造体のメソッド
 func (u User) greetUser() string {
 	return "hello" + u.name
+}
+
+//===================================================
+// interface(メソッドの型だけを記述した型)
+//===================================================
+type Car interface {
+	run(int) string
+	stop()
+}
+
+type MyCar struct {
+	name  string
+	speed int
+}
+
+func (u *MyCar) run(speed int) string {
+	u.speed = speed
+	return strconv.Itoa(speed) + "kmで走ります"
+}
+
+func (u *MyCar) stop() {
+	fmt.Println("停止します")
+	u.speed = 0
 }
 
 func main() {
@@ -208,4 +234,42 @@ func main() {
 
 	// 構造体のメソッド
 	fmt.Println(u.greetUser())
+
+	//===================================================
+	// interface
+	//===================================================
+
+	myCar := &MyCar{name: "マイカー", speed: 0}
+	var car Car = myCar
+	fmt.Println(car.run(50))
+	car.stop()
+
+	// 空のインターフェース
+	// どの型のデータも代入可能
+	var xxx interface{}
+	num := 0
+	strrr := "str"
+
+	xxx = num
+	xxx = strrr
+
+	//	型を判定する
+	if value, ok := xxx.(int); ok {
+		fmt.Println("value is int", value)
+	} else if value, ok := xxx.(string); ok {
+		fmt.Println("value is string", value)
+	} else {
+		fmt.Println("value is other type")
+	}
+
+	xxx = num
+
+	switch value := xxx.(type) {
+	case int:
+		fmt.Println("value is int", value)
+	case string:
+		fmt.Println("value is string", value)
+	default:
+		fmt.Println("value is other type")
+	}
 }
