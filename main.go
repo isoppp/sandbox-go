@@ -272,4 +272,60 @@ func main() {
 	default:
 		fmt.Println("value is other type")
 	}
+
+	//===================================================
+	// よく使うデータ型
+	//===================================================
+
+	nums := []int{2, 3, 4}
+
+	// forループ
+	for i := 0; i < len(nums); i++ {
+		fmt.Print(fmt.Sprintf("index: %d, value: %d\n", i, nums[i]))
+	}
+
+	// range
+	for i, v := range nums {
+		fmt.Print(fmt.Sprintf("index: %d, value: %d\n", i, v))
+	}
+
+	// Array [n]type [5]int と [10]int は違う型
+	// 配列同士の代入はポインタではなく値渡しとなる
+	var arr [5]int
+	fmt.Println("arr", arr)
+	arr[4] = 100
+	fmt.Println("arr", arr)
+	fmt.Println("arr[4]", arr[4])
+
+	arr2 := [5]int{5, 6, 7, 8, 9}
+	fmt.Println("arr2[:]", arr2[:])
+	fmt.Println("arr2[1:4]", arr2[1:4])
+	fmt.Println("arr2[:4]", arr2[:4])
+	fmt.Println("arr2[1:]", arr2[1:])
+
+	// Slice サイズを明示的に持たず柔軟なため使いやすい
+	// ただ細かいメモリの割当の制御ができないのでそういったケースではArrayを使ったほうが良い
+	// こちらは代入した場合にも値ではなくポインタが渡される
+	// [n]type がArray型（長さによって型が異なる） / []type がslice型 ということが重要
+
+	var slice1 []int
+	slice2 := []string{"a", "b", "c"}
+	fmt.Println(slice1)
+	fmt.Println(slice2)
+
+	// Map
+
+	var map1 map[string]int = make(map[string]int)
+	map1["x"] = 10
+	map1["y"] = 100
+	fmt.Println(map1)
+	fmt.Println(map1["x"])
+
+	map2 := map[string]int{"x": 10, "y": 1000}
+	fmt.Println(map2)
+	fmt.Println(map2["y"])
+
+	// mapには2つ戻り値があり、値が存在するかしないかのboolが返ってくる
+	mapval, mapok := map2["xxx"]
+	fmt.Println(mapval, mapok)
 }
