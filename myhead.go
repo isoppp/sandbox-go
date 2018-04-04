@@ -10,25 +10,25 @@ import (
 
 var flagSet = flag.NewFlagSet("default", flag.PanicOnError)
 
-func getArgs() (int, string) {
+func getArgs() (int, []string) {
 	var count int
 	flagSet.IntVar(&count, "n", 10, "help message")
 	flagSet.Parse(os.Args[1:])
+	fmt.Println(flagSet.Args())
 
-	return count, flagSet.Args()[0]
+	return count, flagSet.Args()
 }
 
-func main() {
+func readFile(filename string, showCount int) string {
 	log := ""
-	showCount, fileName := getArgs()
-	data, err := ioutil.ReadFile(fileName)
+	data, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		fmt.Printf("error!\n%s", err)
 		os.Exit(0)
 	}
 
-	log += "=== " + fileName + " ===\n"
+	log += "=== " + filename + " ===\n"
 
 	for i, line := range strings.Split(string(data), "\n") {
 		if i == showCount {
@@ -36,5 +36,17 @@ func main() {
 		}
 		log += line + "\n"
 	}
+
+	return log
+}
+
+func main() {
+	log := ""
+	showCount, files := getArgs()
+
+	for _, file := range files {
+		log += readFile(file, showCount)
+	}
+
 	fmt.Print(log)
 }
