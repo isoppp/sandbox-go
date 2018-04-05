@@ -1,4 +1,4 @@
-package main
+package study
 
 import (
 	"fmt"
@@ -101,7 +101,7 @@ func (u *MyCar) stop() {
 	u.speed = 0
 }
 
-func main() {
+func study() {
 
 	//===================================================
 	// 基本構文
