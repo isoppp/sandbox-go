@@ -10,8 +10,11 @@ import (
 )
 
 func getArgs() (int, []string) {
-	var count int
-	var flagSet = flag.NewFlagSet("default", flag.PanicOnError)
+	var (
+		count   int
+		flagSet = flag.NewFlagSet("default", flag.PanicOnError)
+	)
+
 	flagSet.IntVar(&count, "n", 10, "show line count")
 	flagSet.Parse(os.Args[1:])
 
@@ -19,8 +22,10 @@ func getArgs() (int, []string) {
 }
 
 func readFile(filename string, showCount int) string {
-	log := ""
-	data, err := ioutil.ReadFile(filename)
+	var (
+		log       = ""
+		data, err = ioutil.ReadFile(filename)
+	)
 
 	if err != nil {
 		fmt.Printf("error!\n%s", err)
@@ -31,6 +36,7 @@ func readFile(filename string, showCount int) string {
 
 	for i, line := range strings.Split(string(data), "\n") {
 		if i == showCount {
+			log += "\n"
 			break
 		}
 		log += line + "\n"
@@ -40,26 +46,30 @@ func readFile(filename string, showCount int) string {
 }
 
 func readDir(dirPath string, filePattern string, showCount int) string {
-	log := ""
-	fileInfos, err := ioutil.ReadDir(dirPath)
+	var (
+		log            = ""
+		filesInfo, err = ioutil.ReadDir(dirPath)
+	)
 
 	if err != nil {
 		fmt.Println("error! ", err)
 		os.Exit(0)
 	}
 
-	for _, fileInfo := range fileInfos {
+	for _, fileInfo := range filesInfo {
 		var findName = fileInfo.Name()
-		var matched = true
 		if filePattern != "" {
-			matched, _ = path.Match(filePattern, findName)
+			var match, _ = path.Match(filePattern, findName)
+			if !match {
+				continue
+			}
 		}
 
-		if !matched {
+		var isDir, _ = isDirectory(dirPath + "/" + findName)
+		if isDir {
 			continue
 		}
-
-		log += readFile(dirPath+findName, showCount)
+		log += readFile(dirPath+"/"+findName, showCount)
 	}
 
 	return log
@@ -69,37 +79,41 @@ func isDirectory(path string) (bool, error) {
 	var info, err = os.Stat(path)
 
 	if err != nil {
-		return false, err
+		fmt.Println("error! ", err)
+		os.Exit(0)
 	}
 
 	return info.IsDir(), err
 }
 
 func main() {
-	log := ""
-	var showCount, files = getArgs()
-	var currentDir, _ = os.Getwd()
+	var (
+		log              = ""
+		showCount, files = getArgs()
+		currentDir, _    = os.Getwd()
+	)
 
 	for _, file := range files {
 		var dirName, filePattern = path.Split(file)
-		if dirName == "" {
+
+		if dirName == "" || dirName == "." || dirName == "./" {
 			dirName = currentDir + "/"
 		}
-		fmt.Println(dirName, filePattern)
 
-		var isDir, err = isDirectory(dirName + filePattern)
-		if err != nil {
-			fmt.Printf("error!\n%s", err)
-			os.Exit(0)
-		}
-		if isDir {
-			dirName = dirName + filePattern
+		if filePattern == "." {
 			filePattern = ""
 		}
 
-		fmt.Println("last " + dirName)
+		var isDir, err = isDirectory(dirName + filePattern)
+
+		if err != nil {
+			fmt.Println("error! ", err)
+			os.Exit(0)
+		}
 
 		if isDir {
+			dirName = dirName + filePattern
+			filePattern = ""
 			log += readDir(dirName, filePattern, showCount)
 		} else {
 			log += readFile(file, showCount)
