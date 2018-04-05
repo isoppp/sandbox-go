@@ -12,7 +12,7 @@ import (
 func getArgs() (int, []string) {
 	var count int
 	var flagSet = flag.NewFlagSet("default", flag.PanicOnError)
-	flagSet.IntVar(&count, "n", 10, "help message")
+	flagSet.IntVar(&count, "n", 10, "show line count")
 	flagSet.Parse(os.Args[1:])
 
 	return count, flagSet.Args()
